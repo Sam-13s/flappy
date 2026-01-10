@@ -31,7 +31,7 @@ let bird_y = 300;
 let bird_vel = 0;
 let gravity = 0.5;
 let jump = -8;
-let bird_size = 30;
+let bird_size = 35;
 
 let pipes = [];
 let coins = [];
@@ -50,6 +50,11 @@ let high_score = localStorage.getItem('flappy_highscore') || 0;
 // Load bird image
 let birdImage = new Image();
 birdImage.src = 'bird.svg';
+
+// Load background music
+let bgMusic = new Audio('game-music.mp3');
+bgMusic.loop = true;
+bgMusic.volume = 0.5; // Adjust volume as needed
 
 // Functions
 function newPipe() {
@@ -87,6 +92,7 @@ function resetGame() {
     startBtn.disabled = true;
     pauseBtn.disabled = false;
     pauseBtn.textContent = 'Pause';
+    bgMusic.play();
 }
 
 function updateLevel() {
@@ -213,6 +219,8 @@ function gameOver() {
     gameOverDiv.style.display = 'block';
     startBtn.disabled = false;
     pauseBtn.disabled = true;
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
 }
 
 function updateDisplay() {
@@ -231,6 +239,11 @@ startBtn.addEventListener('click', resetGame);
 pauseBtn.addEventListener('click', () => {
     paused = !paused;
     pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+    if (paused) {
+        bgMusic.pause();
+    } else {
+        bgMusic.play();
+    }
 });
 
 restartBtn.addEventListener('click', resetGame);
