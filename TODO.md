@@ -1,7 +1,0 @@
-- [x] Add Font Awesome CDN link to index.html
-- [x] Add footer element with GitHub, Reddit, LinkedIn icons and links to index.html
-- [x] Add footer styling to style.css
-- [x] Add background gradient to body in style.css
-- [x] Improve spacing and alignment in game-container
-- [x] Add responsiveness with media queries
-- [x] Ensure game elements are well-structured

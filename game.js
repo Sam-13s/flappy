@@ -45,7 +45,7 @@ let running = false;
 let paused = false;
 let game_over = false;
 
-let high_score = localStorage.getItem('flappy_highscore') || 0;
+let high_score = 0;
 
 // Load bird image
 let birdImage = new Image();
