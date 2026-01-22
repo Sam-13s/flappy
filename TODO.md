@@ -1,2 +1,0 @@
-- [x] Move footer outside #game-container in index.html
-- [x] Update footer styles in style.css to fixed bottom with proper styling
