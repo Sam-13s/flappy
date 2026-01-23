@@ -1,15 +1,26 @@
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
-const startBtn = document.getElementById('start-btn');
 const pauseBtn = document.getElementById('pause-btn');
 const restartBtn = document.getElementById('restart-btn');
+const jumpBtn = document.getElementById('jump-btn');
+const soundBtn = document.getElementById('sound-btn');
+const playAgainBtn = document.getElementById('play-again-btn');
 const scoreDisplay = document.getElementById('score-display');
 const gameOverDiv = document.getElementById('game-over');
 const finalScoreP = document.getElementById('final-score');
 const finalHighscoreP = document.getElementById('final-highscore');
+const gameUI = document.getElementById('game-ui');
+const startScreen = document.getElementById('start-screen');
+const startGameBtn = document.getElementById('start-game-btn');
 
+// Set base canvas dimensions
+canvas.width = 400;
+canvas.height = 600;
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
+
+// Calculate scale factor for responsiveness
+const scale = Math.min(canvas.clientWidth / WIDTH, canvas.clientHeight / HEIGHT);
 
 // Colors
 const BLUE = '#87CEEB';
@@ -44,6 +55,7 @@ let bg_color = BLUE;
 let running = false;
 let paused = false;
 let game_over = false;
+let soundMuted = false;
 
 let high_score = 0;
 
@@ -89,10 +101,10 @@ function resetGame() {
     paused = false;
     game_over = false;
     gameOverDiv.style.display = 'none';
-    startBtn.disabled = true;
     pauseBtn.disabled = false;
-    pauseBtn.textContent = 'Pause';
-    bgMusic.play();
+    if (!soundMuted) {
+        bgMusic.play();
+    }
 }
 
 function updateLevel() {
@@ -108,8 +120,35 @@ function updateLevel() {
 }
 
 function draw() {
+    ctx.save();
+    ctx.scale(scale, scale);
+
     ctx.fillStyle = bg_color;
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+    // Draw clouds
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.beginPath();
+    ctx.arc(100, 80, 30, 0, Math.PI * 2);
+    ctx.arc(130, 80, 40, 0, Math.PI * 2);
+    ctx.arc(160, 80, 30, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(300, 120, 25, 0, Math.PI * 2);
+    ctx.arc(325, 120, 35, 0, Math.PI * 2);
+    ctx.arc(355, 120, 25, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Draw ground
+    ctx.fillStyle = '#8B4513';
+    ctx.fillRect(0, HEIGHT - 20, WIDTH, 20);
+
+    // Draw grass on ground
+    ctx.fillStyle = '#228B22';
+    for (let i = 0; i < WIDTH; i += 10) {
+        ctx.fillRect(i, HEIGHT - 20, 5, 10);
+    }
 
     // Draw bird
     const angle = Math.min(Math.max(bird_vel * 3, -30), 30) * Math.PI / 180;
@@ -138,6 +177,8 @@ function draw() {
     ctx.font = '20px Arial';
     ctx.fillText(`Score: ${score}`, 10, 30);
     ctx.fillText(`Level: ${current_level + 1}`, 10, 60);
+
+    ctx.restore();
 }
 
 function update() {
@@ -217,7 +258,6 @@ function gameOver() {
     finalScoreP.textContent = `Final Score: ${score}`;
     finalHighscoreP.textContent = `High Score: ${high_score}`;
     gameOverDiv.style.display = 'block';
-    startBtn.disabled = false;
     pauseBtn.disabled = true;
     bgMusic.pause();
     bgMusic.currentTime = 0;
@@ -234,19 +274,63 @@ function gameLoop() {
 }
 
 // Event listeners
-startBtn.addEventListener('click', resetGame);
+startGameBtn.addEventListener('click', () => {
+    startScreen.style.display = 'none';
+    gameUI.style.display = 'flex';
+    scoreDisplay.style.display = 'block';
+    resetGame();
+});
 
 pauseBtn.addEventListener('click', () => {
     paused = !paused;
-    pauseBtn.textContent = paused ? 'Resume' : 'Pause';
-    if (paused) {
+    const icon = pauseBtn.querySelector('i');
+    icon.className = paused ? 'fas fa-play' : 'fas fa-pause';
+    if (paused || soundMuted) {
         bgMusic.pause();
     } else {
         bgMusic.play();
     }
 });
 
-restartBtn.addEventListener('click', resetGame);
+playAgainBtn.addEventListener('click', resetGame);
+
+jumpBtn.addEventListener('click', () => {
+    if (running && !game_over && !paused) {
+        bird_vel = jump;
+    }
+});
+
+soundBtn.addEventListener('click', () => {
+    soundMuted = !soundMuted;
+    const icon = soundBtn.querySelector('i');
+    icon.className = soundMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+    if (soundMuted) {
+        bgMusic.pause();
+    } else if (running && !paused) {
+        bgMusic.play();
+    }
+});
+
+restartBtn.addEventListener('click', () => {
+    // Reset to start screen
+    running = false;
+    paused = false;
+    game_over = false;
+    gameOverDiv.style.display = 'none';
+    gameUI.style.display = 'none';
+    scoreDisplay.style.display = 'none';
+    startScreen.style.display = 'block';
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+});
+
+// Touch controls for mobile
+document.addEventListener('touchstart', (e) => {
+    if (running && !game_over && !paused) {
+        e.preventDefault();
+        bird_vel = jump;
+    }
+});
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'Space') {
@@ -262,5 +346,9 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Initialize
+high_score = parseInt(localStorage.getItem('flappy_highscore')) || 0;
+startScreen.style.display = 'block';
+gameUI.style.display = 'none';
+scoreDisplay.style.display = 'none';
 updateDisplay();
 gameLoop();

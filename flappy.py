@@ -55,7 +55,7 @@ coin_size = 15
 # Bird
 bird_x, bird_y = 80, 300
 bird_vel = 0
-gravity = 0.5
+gravity = 3.5
 jump = -8
 bird_size = 20
 

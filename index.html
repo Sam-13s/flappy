@@ -13,17 +13,25 @@
 <body>
     <div id="game-container">
         <h1>Flappy Bird</h1>
-        <div id="game-ui">
-            <button id="start-btn">Start Game</button>
-            <button id="pause-btn" disabled>Pause</button>
-            <div id="score-display">Score: 0 | Level: 1 | High Score: 0</div>
+        <div id="start-screen">
+            <h2>Welcome to Flappy Bird!</h2>
+            <p>Click Start Game to begin.</p>
+            <button id="start-game-btn">Start Game</button>
         </div>
-        <canvas id="game-canvas" width="400" height="600"></canvas>
+<canvas id="game-canvas"></canvas>
+
+        <div id="game-ui" style="display: none;">
+            <button id="restart-btn"><i class="fas fa-redo"></i></button>
+            <button id="sound-btn"><i class="fas fa-volume-up"></i></button>
+            <button id="pause-btn" disabled><i class="fas fa-pause"></i></button>
+            <button id="jump-btn"><i class="fa-solid fa-arrow-up fa-beat"></i></button>
+        </div>
+        <div id="score-display" style="display: none;">Score: 0 | Level: 1 | High Score: 0</div>
         <div id="game-over" style="display: none;">
-            <h2>Game Over</h2>
+            <h2>Game Over!</h2>
             <p id="final-score"></p>
             <p id="final-highscore"></p>
-            <button id="restart-btn">Restart</button>
+            <button id="play-again-btn">Play Again</button>
         </div>
         <footer>
 
