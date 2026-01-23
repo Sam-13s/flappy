@@ -20,7 +20,14 @@ const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
 
 // Calculate scale factor for responsiveness
-const scale = Math.min(canvas.clientWidth / WIDTH, canvas.clientHeight / HEIGHT);
+let scale = Math.min(canvas.clientWidth / WIDTH, canvas.clientHeight / HEIGHT);
+
+function updateScale() {
+    scale = Math.min(canvas.clientWidth / WIDTH, canvas.clientHeight / HEIGHT);
+}
+
+// Update scale on window resize
+window.addEventListener('resize', updateScale);
 
 // Colors
 const BLUE = '#87CEEB';
