@@ -108,11 +108,8 @@ while running:
     bird_vel += gravity
     bird_y += bird_vel
     bird_rect = pygame.Rect(bird_x, bird_y, bird_size, bird_size)
-    # Simple rotation based on velocity
-    angle = min(max(bird_vel * 3, -30), 30)
-    rotated_bird = pygame.transform.rotate(pygame.Surface((bird_size, bird_size)), angle)
-    rotated_bird.fill(WHITE)
-    screen.blit(rotated_bird, (bird_x - rotated_bird.get_width() // 2 + bird_size // 2, bird_y - rotated_bird.get_height() // 2 + bird_size // 2))
+    # Draw bird as a yellow circle
+    pygame.draw.circle(screen, YELLOW, (bird_x + bird_size // 2, bird_y + bird_size // 2), bird_size // 2)
 
     # Pipes
     for pipe in pipes:

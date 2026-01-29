@@ -69,6 +69,13 @@ let high_score = 0;
 // Load bird image
 let birdImage = new Image();
 birdImage.src = 'bird.svg';
+let birdImageLoaded = false;
+birdImage.onload = () => {
+    birdImageLoaded = true;
+};
+birdImage.onerror = () => {
+    console.error('Failed to load bird image');
+};
 
 // Load background music
 let bgMusic = new Audio('game-music.mp3');
@@ -162,7 +169,15 @@ function draw() {
     ctx.save();
     ctx.translate(bird_x + bird_size / 2, bird_y + bird_size / 2);
     ctx.rotate(angle);
-    ctx.drawImage(birdImage, -bird_size / 2, -bird_size / 2, bird_size, bird_size);
+    if (birdImageLoaded) {
+        ctx.drawImage(birdImage, -bird_size / 2, -bird_size / 2, bird_size, bird_size);
+    } else {
+        // Fallback: draw a yellow circle if image not loaded
+        ctx.fillStyle = YELLOW;
+        ctx.beginPath();
+        ctx.arc(0, 0, bird_size / 2, 0, Math.PI * 2);
+        ctx.fill();
+    }
     ctx.restore();
 
     // Draw pipes
@@ -335,6 +350,13 @@ restartBtn.addEventListener('click', () => {
 document.addEventListener('touchstart', (e) => {
     if (running && !game_over && !paused) {
         e.preventDefault();
+        bird_vel = jump;
+    }
+});
+
+// Mouse click controls for desktop
+canvas.addEventListener('click', (e) => {
+    if (running && !game_over && !paused) {
         bird_vel = jump;
     }
 });
