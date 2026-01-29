@@ -1,1 +1,0 @@
-- [x] Edit style.css to improve small device UI: Change #game-ui flex-direction to column for screens <480px, adjust top position to 60%, increase gap to 20px; Increase button min-height to 48px and max-width to 200px for better touch targets.
